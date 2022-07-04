@@ -6,12 +6,12 @@ import Grid from "@mui/material/Grid";
 import Task from "../Task/Task";
 import { useDispatch, useSelector } from "react-redux";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Button from "@mui/material/Button";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { filterTasks } from "../../actions/actions";
+import { useState } from "react";
 
 const Demo = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -19,6 +19,9 @@ const Demo = styled("div")(({ theme }) => ({
 
 const TaskList = () => {
   const todos = useSelector((state) => state.todos);
+  const filter = useSelector((state) => state.filteredTodos);
+  const [isFiltred, setIsFiltred] = useState(false);
+  const [btnFilter, setBtnFilter] = useState("all");
   const dispatch = useDispatch();
 
   return (
@@ -37,9 +40,11 @@ const TaskList = () => {
               <Button
                 variant="outlined"
                 style={{ border: "none" }}
+                color={btnFilter === "all" ? "success" : "info"}
                 size="medium"
                 onClick={() => {
                   dispatch(filterTasks("all"));
+                  setBtnFilter("all");
                 }}
                 endIcon={<FormatListBulletedIcon />}
               >
@@ -54,9 +59,12 @@ const TaskList = () => {
               <Button
                 variant="outlined"
                 style={{ border: "none" }}
+                color={btnFilter === "done" ? "success" : "info"}
                 size="medium"
                 onClick={() => {
+                  setIsFiltred(true);
                   dispatch(filterTasks("done"));
+                  setBtnFilter("done");
                 }}
                 endIcon={<TaskAltIcon />}
               >
@@ -71,9 +79,12 @@ const TaskList = () => {
               <Button
                 variant="outlined"
                 style={{ border: "none" }}
+                color={btnFilter === "not" ? "success" : "info"}
                 size="medium"
                 onClick={() => {
                   dispatch(filterTasks("not"));
+                  setIsFiltred(true);
+                  setBtnFilter("not");
                 }}
                 endIcon={<CancelIcon />}
               >
@@ -97,9 +108,9 @@ const TaskList = () => {
                 alignItems: "center",
               }}
             >
-              {todos.map((todo) => (
-                <Task todo={todo} key={todo.id} />
-              ))}
+              {!isFiltred || filter.length <= 0
+                ? todos.map((todo) => <Task todo={todo} key={todo.id} />)
+                : filter.map((todo) => <Task todo={todo} key={todo.id} />)}
             </List>
           </Demo>
         </Grid>

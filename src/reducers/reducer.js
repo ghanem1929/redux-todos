@@ -7,12 +7,6 @@ import {
   SET_CURRENT_TASK,
 } from "../actions/types";
 
-const initialState = {
-  todos: [],
-  current: null,
-  filteredTodos: [],
-};
-
 export default (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_TASK:
@@ -48,15 +42,24 @@ export default (state = initialState, { type, payload }) => {
     case FILTER_TASKS:
       return {
         ...state,
-        todos:
-          payload === "all"
-            ? state.todos
-            : payload === "done"
-            ? state.todos.filter((todo) => todo.isDone === true)
-            : state.todos.filter((todo) => todo.isDone === false),
+        filteredTodos:
+          payload === "done"
+            ? (state.filteredTodos = state.todos.filter(
+                (todo) => todo.isDone === true
+              ))
+            : payload === "not"
+            ? (state.filteredTodos = state.todos.filter(
+                (todo) => todo.isDone === false
+              ))
+            : [],
       };
 
     default:
       return state;
   }
+};
+const initialState = {
+  todos: [],
+  current: null,
+  filteredTodos: [],
 };
